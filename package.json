@@ -1,0 +1,40 @@
+{
+    "name": "test-balance-app",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "dev": "node --watch --env-file .env src/server.js",
+        "start": "node --env-file .env src/server.js",
+        "lint": "eslint .",
+        "lint:fix": "eslint --fix .",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "prepare": "husky"
+    },
+    "keywords": [],
+    "author": "Alex Kovalko <alexkavalko@gmail.com>",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "axios": "^1.8.3",
+        "body-parser": "^1.20.3",
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2",
+        "express-joi-validation": "^6.0.0",
+        "joi": "^17.13.3",
+        "pg": "^8.14.1",
+        "pg-hstore": "^2.3.4",
+        "sequelize": "^6.37.6",
+        "umzug": "^3.8.2"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.22.0",
+        "eslint": "^9.22.0",
+        "prettier": "^3.5.3"
+    },
+    "pnpm": {
+        "onlyBuiltDependencies": [
+            "esbuild"
+        ]
+    }
+}

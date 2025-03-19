@@ -1,0 +1,17 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 200
+      arrivalRate: 50
+  defaults:
+    headers:
+      content-type: application/json
+
+scenarios:
+  - flow:
+      - post:
+          url: "/users/1"
+          json:
+            amount: -2
+          expect:
+            - statusCode: 200
