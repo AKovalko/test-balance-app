@@ -1,31 +1,40 @@
 const User = require("../common/database/models/user.model");
 const sequelize = require("../common/database/config");
-const { QueryTypes } = require("sequelize");
+const { Op } = require("sequelize");
 
 class UserService {
-    async getBalance(userId) {
-        const user = await User.findByPk(Number(userId));
-        if (!user) {
-            throw new Error("User not found.");
-        }
-        return user.balance;
+  async getBalance(userId) {
+    const user = await User.findByPk(Number(userId));
+    if (!user) {
+      throw new Error("User not found.");
+    }
+    return user.balance;
+  }
+
+  async updateBalance(userId, amount) {
+    const user = await User.findByPk(userId);
+    if (!user) throw new Error("User not found.");
+
+    if (amount < 0) {
+      const [updatedCount] = await User.update(
+        { balance: sequelize.literal(`balance + ${amount}`) },
+        { where: { id: userId, balance: { [Op.gte]: Math.abs(amount) } } },
+      );
+      if (!updatedCount) throw new Error("Insufficient funds.");
+    } else {
+      await User.update(
+        {
+          balance: amount,
+        },
+        {
+          id: userId,
+        },
+      );
     }
 
-    async updateBalance(userId, amount) {
-        const [result] = await sequelize.query(
-            `UPDATE "Users" SET balance = balance + :amount WHERE id = :userId AND balance + :amount >= 0 RETURNING balance`,
-            {
-                replacements: {
-                    amount: Number(amount),
-                    userId: Number(userId),
-                },
-                type: QueryTypes.UPDATE,
-            },
-        );
-
-        if (!result.length) throw new Error("Insufficient funds.");
-        return result?.balance ?? 0;
-    }
+    const updatedUser = await User.findByPk(userId);
+    return updatedUser.balance;
+  }
 }
 
 module.exports = new UserService();
